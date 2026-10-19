@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- CONFIGURACION DE VERSION -->
+  <meta name="version" content="v0.1.0">
+  <title>Gantt Diario</title>
+  <script>
+    // CONTROL DE VERSION SEMVER
+    window.APP_VERSION = "v0.1.0";
+  </script>
+
+  <!-- PWA Y METADATOS MOVILES -->
+  <meta name="theme-color" content="#ffffff" id="meta-theme-color">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Gantt Diario">
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.json">
+
+  <!-- ESTILOS ESTRUCTURALES Y TEMAS -->
+  <style>
+    /* PALETA LIQUID GLASS Y FONDOS ABSOLUTOS */
+    html[data-theme="light"],
+    html[data-theme="auto"] {
+      --bg-page: #ffffff;
+      --bg-surface: #ffffff;
+      --text-main: #000000;
+      --text-muted: #555555;
+      --border-color: rgba(0, 0, 0, 0.12);
+      --grid-line: rgba(0, 0, 0, 0.05);
+      --grid-hour-line: rgba(0, 0, 0, 0.22);
+      --glass-bg: rgba(255, 255, 255, 0.75);
+      --btn-bg-neutral: rgba(0, 0, 0, 0.06);
+      --btn-border-neutral: rgba(0, 0, 0, 0.14);
+      --btn-bg-primary: rgba(0, 122, 255, 0.16);
+      --btn-border-primary: rgba(0, 122, 255, 0.4);
+      --btn-text-primary: #0066cc;
+      --btn-bg-danger: rgba(255, 59, 48, 0.16);
+      --btn-border-danger: rgba(255, 59, 48, 0.4);
+      --btn-text-danger: #cc2217;
+      --modal-bg: rgba(255, 255, 255, 0.92);
+      --modal-overlay: rgba(0, 0, 0, 0.4);
+      --input-bg: rgba(0, 0, 0, 0.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="auto"] {
+        --bg-page: #000000;
+        --bg-surface: #000000;
+        --text-main: #ffffff;
+        --text-muted: #aaaaaa;
+        --border-color: rgba(255, 255, 255, 0.15);
+        --grid-line: rgba(255, 255, 255, 0.06);
+        --grid-hour-line: rgba(255, 255, 255, 0.28);
+        --glass-bg: rgba(0, 0, 0, 0.75);
+        --btn-bg-neutral: rgba(255, 255, 255, 0.12);
+        --btn-border-neutral: rgba(255, 255, 255, 0.2);
+        --btn-bg-primary: rgba(10, 132, 255, 0.26);
+        --btn-border-primary: rgba(10, 132, 255, 0.55);
+        --btn-text-primary: #64b5f6;
+        --btn-bg-danger: rgba(255, 69, 58, 0.26);
+        --btn-border-danger: rgba(255, 69, 58, 0.55);
+        --btn-text-danger: #ff8a80;
+        --modal-bg: rgba(10, 10, 10, 0.92);
+        --modal-overlay: rgba(0, 0, 0, 0.75);
+        --input-bg: rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    html[data-theme="dark"] {
+      --bg-page: #000000;
+      --bg-surface: #000000;
+      --text-main: #ffffff;
+      --text-muted: #aaaaaa;
+      --border-color: rgba(255, 255, 255, 0.15);
+      --grid-line: rgba(255, 255, 255, 0.06);
+      --grid-hour-line: rgba(255, 255, 255, 0.28);
+      --glass-bg: rgba(0, 0, 0, 0.75);
+      --btn-bg-neutral: rgba(255, 255, 255, 0.12);
+      --btn-border-neutral: rgba(255, 255, 255, 0.2);
+      --btn-bg-primary: rgba(10, 132, 255, 0.26);
+      --btn-border-primary: rgba(10, 132, 255, 0.55);
+      --btn-text-primary: #64b5f6;
+      --btn-bg-danger: rgba(255, 69, 58, 0.26);
+      --btn-border-danger: rgba(255, 69, 58, 0.55);
+      --btn-text-danger: #ff8a80;
+      --modal-bg: rgba(10, 10, 10, 0.92);
+      --modal-overlay: rgba(0, 0, 0, 0.75);
+      --input-bg: rgba(255, 255, 255, 0.08);
+    }
+
+    :root {
+      --slot-width: 28px;
+      --row-height: 48px;
+      --header-height: 44px;
+      --sidebar-width: 155px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      width: 100%;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+      font-size: 14px;
+      overscroll-behavior-y: none;
+    }
+
+    /* BARRA SUPERIOR LIQUID GLASS */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 14px;
+      background-color: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      gap: 8px;
+      transform: translateZ(0);
+    }
+
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .app-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .version-tag {
+      background-color: var(--btn-bg-neutral);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+
+    /* BOTONES TRANSLUCIDOS */
+    .btn {
+      min-height: 38px;
+      padding: 0 11px;
+      border-radius: 14px;
+      background-color: var(--btn-bg-neutral);
+      border: 1px solid var(--btn-border-neutral);
+      color: var(--text-main);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: transform 0.12s ease, opacity 0.12s ease, background-color 0.2s ease;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+      opacity: 0.85;
+    }
+
+    .btn-primary {
+      background-color: var(--btn-bg-primary);
+      border-color: var(--btn-border-primary);
+      color: var(--btn-text-primary);
+      font-weight: 600;
+    }
+
+    .btn-danger {
+      background-color: var(--btn-bg-danger);
+      border-color: var(--btn-border-danger);
+      color: var(--btn-text-danger);
+    }
+
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+    }
+
+    /* GESTION DE PROYECTOS */
+    .project-control-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .project-dropdown {
+      min-height: 38px;
+      border-radius: 14px;
+      background-color: var(--btn-bg-neutral);
+      border: 1px solid var(--btn-border-neutral);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 10px;
+      max-width: 130px;
+      outline: none;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .project-dropdown option {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+    }
+
+    /* CONTENEDOR DEL GANTT */
+    .gantt-scroller {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: auto;
+      background-color: var(--bg-page);
+      max-height: calc(100vh - 58px);
+      position: relative;
+      -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
+    }
+
+    .gantt-board {
+      display: grid;
+      position: relative;
+      min-width: 100%;
+      width: max-content;
+      background-color: var(--bg-page);
+    }
+
+    /* CABECERA TEMPORAL */
+    .gantt-head {
+      display: flex;
+      height: var(--header-height);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background-color: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .gantt-head-sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      position: sticky;
+      left: 0;
+      z-index: 35;
+      background-color: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid var(--border-color);
+      padding: 0 10px;
+      font-weight: 600;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .gantt-timeline-track {
+      display: flex;
+      position: relative;
+    }
+
+    .hour-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--grid-hour-line);
+      height: 100%;
+    }
+
+    .hour-label {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 6px;
+      color: var(--text-muted);
+    }
+
+    .slot-ticks {
+      display: flex;
+      height: 6px;
+    }
+
+    .slot-tick {
+      width: var(--slot-width);
+      border-right: 1px solid var(--grid-line);
+      height: 100%;
+    }
+
+    /* FILAS Y REORDENAMIENTO MANUAL */
+    .gantt-rows {
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-page);
+    }
+
+    .gantt-row {
+      display: flex;
+      height: var(--row-height);
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    .row-sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      position: sticky;
+      left: 0;
+      z-index: 20;
+      background-color: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid var(--border-color);
+      padding: 0 6px 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .row-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .row-order-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-left: 4px;
+    }
+
+    .btn-order {
+      width: 20px;
+      height: 18px;
+      min-height: 18px;
+      padding: 0;
+      font-size: 9px;
+      border-radius: 6px;
+      border: 1px solid var(--btn-border-neutral);
+      background-color: var(--btn-bg-neutral);
+      color: var(--text-muted);
+    }
+
+    .row-cells-container {
+      position: relative;
+      display: flex;
+      background-color: var(--bg-page);
+      background-size: var(--slot-width) 100%, calc(var(--slot-width) * 6) 100%;
+      background-image: 
+        linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-hour-line) 1px, transparent 1px);
+    }
+
+    .task-bar {
+      position: absolute;
+      top: 6px;
+      height: calc(var(--row-height) - 12px);
+      border-radius: 12px;
+      padding: 0 10px;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      z-index: 10;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .empty-state {
+      padding: 48px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      background-color: var(--bg-page);
+    }
+
+    /* MODALES LIQUID GLASS */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--modal-overlay);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 14px;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-window {
+      background-color: var(--modal-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      min-height: 44px;
+      font-size: 16px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background-color: var(--input-bg);
+      color: var(--text-main);
+      width: 100%;
+      outline: none;
+    }
+
+    .time-selector-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .time-box-group {
+      display: flex;
+      gap: 4px;
+    }
+
+    .time-box-group select {
+      min-height: 44px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background-color: var(--input-bg);
+      color: var(--text-main);
+      flex: 1;
+      padding: 0 4px;
+      text-align: center;
+      outline: none;
+    }
+
+    .time-box-group select option {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+    }
+
+    /* PALETA CROMATICA DE TAREAS */
+    .color-presets {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .color-bubble {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      transition: transform 0.15s ease;
+    }
+
+    .color-bubble.selected {
+      border-color: var(--text-main);
+      transform: scale(1.15);
+    }
+
+    .modal-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      background-color: transparent;
+    }
+
+    .theme-icon-svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.35s ease, opacity 0.2s ease;
+    }
+
+    /* RESPONSIVIDAD MOBILE FIRST */
+    @media (max-width: 480px) {
+      :root {
+        --sidebar-width: 115px;
+      }
+      .app-title {
+        display: none;
+      }
+      .project-dropdown {
+        max-width: 95px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE ACCION SUPERIOR -->
+  <header>
+    <div class="header-left">
+      <span class="app-title">Planificación</span>
+      <span class="version-tag" id="ui-version"></span>
+      <div class="project-control-group">
+        <select id="project-selector" class="project-dropdown"></select>
+        <button type="button" class="btn btn-icon" id="btn-add-project" title="Nuevo Proyecto">+</button>
+        <button type="button" class="btn btn-icon" id="btn-edit-project" title="Renombrar Proyecto">✎</button>
+        <button type="button" class="btn btn-icon" id="btn-delete-project" title="Eliminar Proyecto">✕</button>
+      </div>
+    </div>
+    <div class="header-right">
+      <button type="button" class="btn btn-primary" id="btn-add-task">+ Tarea</button>
+      <button type="button" class="btn" id="btn-export">Exportar</button>
+      <button type="button" class="btn" id="btn-import-trigger">Importar</button>
+      <button type="button" class="btn btn-icon" id="btn-theme-toggle" title="Cambiar Tema" aria-label="Cambiar Tema">
+        <svg class="theme-icon-svg" id="theme-icon" viewBox="0 0 24 24"></svg>
+      </button>
+      <input type="file" id="file-importer" accept=".json" style="display: none;">
+    </div>
+  </header>
+
+  <!-- VISTA DEL PLANIFICADOR -->
+  <main class="gantt-scroller" id="gantt-scroller">
+    <div class="gantt-board" id="gantt-board">
+      <div class="gantt-head">
+        <div class="gantt-head-sidebar">Proceso / Tarea</div>
+        <div class="gantt-timeline-track" id="header-timeline-track"></div>
+      </div>
+      <div class="gantt-rows" id="gantt-rows-container"></div>
+    </div>
+    <div id="empty-state" class="empty-state" style="display: none;">
+      Sin tareas activas en este proyecto. Presiona "+ Tarea" para comenzar.
+    </div>
+  </main>
+
+  <!-- FORMULARIO MODAL INTERACTIVO -->
+  <div class="modal-overlay" id="task-modal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <span id="modal-title">Nueva Tarea</span>
+        <button type="button" class="btn btn-icon" id="btn-modal-close" style="width: 32px; height: 32px;">✕</button>
+      </div>
+      <form id="task-form">
+        <div class="modal-body">
+          <input type="hidden" id="task-id">
+          <div class="form-group">
+            <label for="task-name">Descripción del Proceso</label>
+            <input type="text" id="task-name" class="form-control" placeholder="Ej. Calibración de línea" autocomplete="off" required>
+          </div>
+          <div class="time-selector-row">
+            <div class="form-group">
+              <label>Inicio</label>
+              <div class="time-box-group">
+                <select id="start-hour">
+                  <option value="00">00</option><option value="01">01</option><option value="02">02</option>
+                  <option value="03">03</option><option value="04">04</option><option value="05">05</option>
+                  <option value="06">06</option><option value="07">07</option><option value="08" selected>08</option>
+                  <option value="09">09</option><option value="10">10</option><option value="11">11</option>
+                  <option value="12">12</option><option value="13">13</option><option value="14">14</option>
+                  <option value="15">15</option><option value="16">16</option><option value="17">17</option>
+                  <option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                  <option value="21">21</option><option value="22">22</option><option value="23">23</option>
+                </select>
+                <select id="start-minute">
+                  <option value="00" selected>00</option><option value="10">10</option>
+                  <option value="20">20</option><option value="30">30</option>
+                  <option value="40">40</option><option value="50">50</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Término</label>
+              <div class="time-box-group">
+                <select id="end-hour">
+                  <option value="00">00</option><option value="01">01</option><option value="02">02</option>
+                  <option value="03">03</option><option value="04">04</option><option value="05">05</option>
+                  <option value="06">06</option><option value="07">07</option><option value="08">08</option>
+                  <option value="09" selected>09</option><option value="10">10</option><option value="11">11</option>
+                  <option value="12">12</option><option value="13">13</option><option value="14">14</option>
+                  <option value="15">15</option><option value="16">16</option><option value="17">17</option>
+                  <option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                  <option value="21">21</option><option value="22">22</option><option value="23">23</option>
+                  <option value="24">24</option>
+                </select>
+                <select id="end-minute">
+                  <option value="00" selected>00</option><option value="10">10</option>
+                  <option value="20">20</option><option value="30">30</option>
+                  <option value="40">40</option><option value="50">50</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Identificador Visual</label>
+            <div class="color-presets" id="color-picker-group"></div>
+            <input type="hidden" id="task-color" value="#007aff">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btn-delete-task" style="display: none;">Eliminar</button>
+          <button type="button" class="btn" id="btn-modal-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-task">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE CONTINGENCIA EXPORTACION -->
+  <div class="modal-overlay" id="export-modal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <span>Copia de Respaldo JSON</span>
+        <button type="button" class="btn btn-icon" id="btn-export-modal-close" style="width: 32px; height: 32px;">✕</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="export-textarea" class="form-control" style="height: 180px; font-family: monospace; font-size: 12px; resize: none;" readonly></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btn-copy-json">Copiar al Portapapeles</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROLADOR LOGICO -->
+  <script>
+    // ESTADO GENERAL Y PALETA
+    var STORAGE_KEY = "gantt_daily_data";
+    var PALETTE = [
+      "#007aff", "#34c759", "#ff9500", "#ff3b30",
+      "#af52de", "#5856d6", "#00c7be", "#ff2d55"
+    ];
+    var SLOT_MINUTES = 10;
+    var SLOT_WIDTH = 28;
+
+    var state = {
+      version: window.APP_VERSION,
+      activeProjectId: "p_default",
+      theme: "auto",
+      projects: [
+        {
+          id: "p_default",
+          name: "Principal",
+          tasks: []
+        }
+      ]
+    };
+
+    // FORMATEADORES TEMPORALES
+    function minutesToTimeString(totalMinutes) {
+      var h = Math.floor(totalMinutes / 60);
+      var m = totalMinutes % 60;
+      var hh = h < 10 ? "0" + h : "" + h;
+      var mm = m < 10 ? "0" + m : "" + m;
+      return hh + ":" + mm;
+    }
+
+    function generateId() {
+      return Date.now().toString(36) + "-" + Math.floor(Math.random() * 100000).toString(36);
+    }
+
+    // GESTION DE PROYECTOS
+    function getActiveProject() {
+      for (var i = 0; i < state.projects.length; i++) {
+        if (state.projects[i].id === state.activeProjectId) {
+          return state.projects[i];
+        }
+      }
+      return state.projects[0];
+    }
+
+    function updateProjectSelector() {
+      var selector = document.getElementById("project-selector");
+      selector.innerHTML = "";
+      for (var i = 0; i < state.projects.length; i++) {
+        var opt = new Option(state.projects[i].name, state.projects[i].id);
+        if (state.projects[i].id === state.activeProjectId) {
+          opt.selected = true;
+        }
+        selector.add(opt);
+      }
+    }
+
+    // CONTROLADOR DE TEMA
+    function updateThemeMetaColor(resolvedTheme) {
+      var meta = document.getElementById("meta-theme-color");
+      if (meta) {
+        meta.setAttribute("content", resolvedTheme === "dark" ? "#000000" : "#ffffff");
+      }
+    }
+
+    function renderThemeIcon(themeMode) {
+      var icon = document.getElementById("theme-icon");
+      if (themeMode === "light") {
+        icon.style.transform = "rotate(0deg)";
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+      } else if (themeMode === "dark") {
+        icon.style.transform = "rotate(40deg)";
+        icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+      } else {
+        icon.style.transform = "rotate(360deg)";
+        icon.innerHTML = '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>';
+      }
+    }
+
+    function applyTheme(themeMode) {
+      state.theme = themeMode;
+      document.documentElement.setAttribute("data-theme", themeMode);
+      renderThemeIcon(themeMode);
+
+      var resolved = "light";
+      if (themeMode === "dark") {
+        resolved = "dark";
+      } else if (themeMode === "auto") {
+        var isSystemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        resolved = isSystemDark ? "dark" : "light";
+      }
+      updateThemeMetaColor(resolved);
+    }
+
+    function toggleTheme() {
+      var nextTheme = "light";
+      if (state.theme === "auto") nextTheme = "light";
+      else if (state.theme === "light") nextTheme = "dark";
+      else if (state.theme === "dark") nextTheme = "auto";
+      applyTheme(nextTheme);
+      saveState();
+    }
+
+    // PERSISTENCIA
+    function loadState() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed) {
+            if (Array.isArray(parsed.tasks) && !parsed.projects) {
+              state.projects = [{
+                id: "p_default",
+                name: "Principal",
+                tasks: parsed.tasks
+              }];
+              state.activeProjectId = "p_default";
+            } else if (Array.isArray(parsed.projects) && parsed.projects.length > 0) {
+              state.projects = parsed.projects;
+              state.activeProjectId = parsed.activeProjectId || state.projects[0].id;
+            }
+            if (parsed.theme) {
+              state.theme = parsed.theme;
+            }
+          }
+        }
+      } catch (err) {}
+      applyTheme(state.theme);
+      updateProjectSelector();
+    }
+
+    function saveState() {
+      try {
+        var payload = {
+          version: window.APP_VERSION,
+          activeProjectId: state.activeProjectId,
+          theme: state.theme,
+          lastUpdated: new Date().toISOString(),
+          projects: state.projects
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (err) {}
+    }
+
+    // CALCULO DINAMICO DE TIEMPO
+    function computeTimeBounds() {
+      var project = getActiveProject();
+      if (!project || project.tasks.length === 0) {
+        return { startMinute: 480, endMinute: 1080 };
+      }
+
+      var earliest = 1440;
+      var latest = 0;
+
+      for (var i = 0; i < project.tasks.length; i++) {
+        if (project.tasks[i].startMinutes < earliest) {
+          earliest = project.tasks[i].startMinutes;
+        }
+        if (project.tasks[i].endMinutes > latest) {
+          latest = project.tasks[i].endMinutes;
+        }
+      }
+
+      var windowStart = Math.max(0, Math.floor((earliest - 60) / 60) * 60);
+      var windowEnd = Math.min(1440, Math.ceil((latest + 60) / 60) * 60);
+
+      if (windowEnd <= windowStart) {
+        windowEnd = Math.min(1440, windowStart + 120);
+      }
+
+      return { startMinute: windowStart, endMinute: windowEnd };
+    }
+
+    // REORDENAMIENTO MANUAL DE TAREAS
+    function moveTaskOrder(index, direction) {
+      var project = getActiveProject();
+      if (!project) return;
+      var targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= project.tasks.length) return;
+
+      var temp = project.tasks[index];
+      project.tasks[index] = project.tasks[targetIndex];
+      project.tasks[targetIndex] = temp;
+
+      saveState();
+      renderGantt();
+    }
+
+    // MOTOR DE RENDERIZADO
+    function renderGantt() {
+      var project = getActiveProject();
+      var bounds = computeTimeBounds();
+      var startMin = bounds.startMinute;
+      var endMin = bounds.endMinute;
+      var totalMinutes = endMin - startMin;
+      var totalSlots = totalMinutes / SLOT_MINUTES;
+      var totalTrackWidth = totalSlots * SLOT_WIDTH;
+
+      var headerTrack = document.getElementById("header-timeline-track");
+      var rowsContainer = document.getElementById("gantt-rows-container");
+      var emptyState = document.getElementById("empty-state");
+
+      headerTrack.innerHTML = "";
+      rowsContainer.innerHTML = "";
+
+      if (!project || project.tasks.length === 0) {
+        emptyState.style.display = "block";
+      } else {
+        emptyState.style.display = "none";
+      }
+
+      var startHour = startMin / 60;
+      var endHour = endMin / 60;
+
+      for (var h = startHour; h < endHour; h++) {
+        var hourDiv = document.createElement("div");
+        hourDiv.className = "hour-block";
+        hourDiv.style.width = (SLOT_WIDTH * 6) + "px";
+
+        var hourLabel = document.createElement("div");
+        hourLabel.className = "hour-label";
+        var hh = h < 10 ? "0" + h : "" + h;
+        hourLabel.textContent = hh + ":00";
+
+        var ticksDiv = document.createElement("div");
+        ticksDiv.className = "slot-ticks";
+        for (var t = 0; t < 6; t++) {
+          var tick = document.createElement("div");
+          tick.className = "slot-tick";
+          ticksDiv.appendChild(tick);
+        }
+
+        hourDiv.appendChild(hourLabel);
+        hourDiv.appendChild(ticksDiv);
+        headerTrack.appendChild(hourDiv);
+      }
+
+      if (!project) return;
+
+      for (var i = 0; i < project.tasks.length; i++) {
+        var task = project.tasks[i];
+
+        var rowDiv = document.createElement("div");
+        rowDiv.className = "gantt-row";
+
+        var sidebar = document.createElement("div");
+        sidebar.className = "row-sidebar";
+
+        var titleSpan = document.createElement("span");
+        titleSpan.className = "row-title";
+        titleSpan.textContent = task.name;
+        titleSpan.title = task.name;
+
+        (function(targetTask) {
+          titleSpan.addEventListener("click", function() {
+            openModal(targetTask);
+          });
+        })(task);
+
+        sidebar.appendChild(titleSpan);
+
+        var orderBox = document.createElement("div");
+        orderBox.className = "row-order-controls";
+
+        var btnUp = document.createElement("button");
+        btnUp.className = "btn btn-order";
+        btnUp.textContent = "▲";
+        btnUp.disabled = (i === 0);
+        (function(idx) {
+          btnUp.addEventListener("click", function(e) {
+            e.stopPropagation();
+            moveTaskOrder(idx, -1);
+          });
+        })(i);
+
+        var btnDown = document.createElement("button");
+        btnDown.className = "btn btn-order";
+        btnDown.textContent = "▼";
+        btnDown.disabled = (i === project.tasks.length - 1);
+        (function(idx) {
+          btnDown.addEventListener("click", function(e) {
+            e.stopPropagation();
+            moveTaskOrder(idx, 1);
+          });
+        })(i);
+
+        orderBox.appendChild(btnUp);
+        orderBox.appendChild(btnDown);
+        sidebar.appendChild(orderBox);
+
+        var cellsContainer = document.createElement("div");
+        cellsContainer.className = "row-cells-container";
+        cellsContainer.style.width = totalTrackWidth + "px";
+
+        var relativeStart = task.startMinutes - startMin;
+        var duration = task.endMinutes - task.startMinutes;
+
+        var taskLeft = (relativeStart / SLOT_MINUTES) * SLOT_WIDTH;
+        var taskWidth = (duration / SLOT_MINUTES) * SLOT_WIDTH;
+
+        var bar = document.createElement("div");
+        bar.className = "task-bar";
+        bar.style.left = taskLeft + "px";
+        bar.style.width = taskWidth + "px";
+        bar.style.backgroundColor = task.color;
+
+        var textContent = document.createElement("span");
+        textContent.textContent = task.name;
+        textContent.style.overflow = "hidden";
+        textContent.style.textOverflow = "ellipsis";
+
+        var timeContent = document.createElement("span");
+        timeContent.style.fontSize = "10px";
+        timeContent.style.opacity = "0.9";
+        timeContent.style.marginLeft = "6px";
+        timeContent.textContent = minutesToTimeString(task.startMinutes) + " - " + minutesToTimeString(task.endMinutes);
+
+        bar.appendChild(textContent);
+        bar.appendChild(timeContent);
+
+        (function(targetTask) {
+          bar.addEventListener("click", function(e) {
+            e.stopPropagation();
+            openModal(targetTask);
+          });
+        })(task);
+
+        cellsContainer.appendChild(bar);
+        rowDiv.appendChild(sidebar);
+        rowDiv.appendChild(cellsContainer);
+        rowsContainer.appendChild(rowDiv);
+      }
+    }
+
+    // MODAL Y PALETA
+    function initPalette() {
+      var colorContainer = document.getElementById("color-picker-group");
+      colorContainer.innerHTML = "";
+      for (var c = 0; c < PALETTE.length; c++) {
+        var bubble = document.createElement("div");
+        bubble.className = "color-bubble";
+        bubble.style.backgroundColor = PALETTE[c];
+        bubble.setAttribute("data-color", PALETTE[c]);
+        bubble.addEventListener("click", function() {
+          selectColor(this.getAttribute("data-color"));
+        });
+        colorContainer.appendChild(bubble);
+      }
+    }
+
+    function selectColor(color) {
+      document.getElementById("task-color").value = color;
+      var bubbles = document.querySelectorAll(".color-bubble");
+      for (var b = 0; b < bubbles.length; b++) {
+        if (bubbles[b].getAttribute("data-color") === color) {
+          bubbles[b].classList.add("selected");
+        } else {
+          bubbles[b].classList.remove("selected");
+        }
+      }
+    }
+
+    function openModal(task) {
+      var modal = document.getElementById("task-modal");
+      var title = document.getElementById("modal-title");
+      var deleteBtn = document.getElementById("btn-delete-task");
+
+      if (task) {
+        title.textContent = "Modificar Tarea";
+        document.getElementById("task-id").value = task.id;
+        document.getElementById("task-name").value = task.name;
+
+        var sh = Math.floor(task.startMinutes / 60);
+        var sm = task.startMinutes % 60;
+        var eh = Math.floor(task.endMinutes / 60);
+        var em = task.endMinutes % 60;
+
+        document.getElementById("start-hour").value = sh < 10 ? "0" + sh : "" + sh;
+        document.getElementById("start-minute").value = sm < 10 ? "0" + sm : "" + sm;
+        document.getElementById("end-hour").value = eh < 10 ? "0" + eh : "" + eh;
+        document.getElementById("end-minute").value = em < 10 ? "0" + em : "" + em;
+
+        selectColor(task.color);
+        deleteBtn.style.display = "inline-flex";
+      } else {
+        title.textContent = "Nueva Tarea";
+        document.getElementById("task-id").value = "";
+        document.getElementById("task-name").value = "";
+        document.getElementById("start-hour").value = "08";
+        document.getElementById("start-minute").value = "00";
+        document.getElementById("end-hour").value = "09";
+        document.getElementById("end-minute").value = "00";
+        selectColor(PALETTE[0]);
+        deleteBtn.style.display = "none";
+      }
+
+      modal.classList.add("active");
+    }
+
+    function closeModal() {
+      document.getElementById("task-modal").classList.remove("active");
+    }
+
+    // GESTION DE EVENTOS DE PROYECTOS
+    document.getElementById("project-selector").addEventListener("change", function(e) {
+      state.activeProjectId = e.target.value;
+      saveState();
+      renderGantt();
+    });
+
+    document.getElementById("btn-add-project").addEventListener("click", function() {
+      var name = prompt("Nombre del nuevo proyecto:");
+      if (!name || !name.trim()) return;
+      var newProject = {
+        id: "p_" + Date.now().toString(36),
+        name: name.trim(),
+        tasks: []
+      };
+      state.projects.push(newProject);
+      state.activeProjectId = newProject.id;
+      saveState();
+      updateProjectSelector();
+      renderGantt();
+    });
+
+    document.getElementById("btn-edit-project").addEventListener("click", function() {
+      var project = getActiveProject();
+      var name = prompt("Renombrar proyecto:", project.name);
+      if (!name || !name.trim()) return;
+      project.name = name.trim();
+      saveState();
+      updateProjectSelector();
+    });
+
+    document.getElementById("btn-delete-project").addEventListener("click", function() {
+      if (state.projects.length <= 1) {
+        alert("Debe existir al menos un proyecto activo.");
+        return;
+      }
+      var project = getActiveProject();
+      if (!confirm("¿Deseas eliminar el proyecto «" + project.name + "» y todas sus tareas?")) return;
+
+      var filtered = [];
+      for (var i = 0; i < state.projects.length; i++) {
+        if (state.projects[i].id !== project.id) {
+          filtered.push(state.projects[i]);
+        }
+      }
+      state.projects = filtered;
+      state.activeProjectId = state.projects[0].id;
+      saveState();
+      updateProjectSelector();
+      renderGantt();
+    });
+
+    // CONTROLADORES DE EVENTOS GENERALES
+    document.getElementById("btn-theme-toggle").addEventListener("click", toggleTheme);
+
+    document.getElementById("btn-add-task").addEventListener("click", function() {
+      openModal(null);
+    });
+
+    document.getElementById("btn-modal-close").addEventListener("click", closeModal);
+    document.getElementById("btn-modal-cancel").addEventListener("click", closeModal);
+
+    document.getElementById("task-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      var project = getActiveProject();
+      var id = document.getElementById("task-id").value;
+      var name = document.getElementById("task-name").value.trim();
+      var sh = parseInt(document.getElementById("start-hour").value, 10);
+      var sm = parseInt(document.getElementById("start-minute").value, 10);
+      var eh = parseInt(document.getElementById("end-hour").value, 10);
+      var em = parseInt(document.getElementById("end-minute").value, 10);
+      var color = document.getElementById("task-color").value;
+
+      if (!name) {
+        alert("Ingresa un nombre para la tarea.");
+        return;
+      }
+
+      var startMinutes = (sh * 60) + sm;
+      var endMinutes = (eh * 60) + em;
+
+      if (endMinutes <= startMinutes) {
+        alert("La hora de término debe ser mayor a la hora de inicio.");
+        return;
+      }
+
+      if (id) {
+        for (var i = 0; i < project.tasks.length; i++) {
+          if (project.tasks[i].id === id) {
+            project.tasks[i].name = name;
+            project.tasks[i].startMinutes = startMinutes;
+            project.tasks[i].endMinutes = endMinutes;
+            project.tasks[i].color = color;
+            break;
+          }
+        }
+      } else {
+        project.tasks.push({
+          id: generateId(),
+          name: name,
+          startMinutes: startMinutes,
+          endMinutes: endMinutes,
+          color: color
+        });
+      }
+
+      saveState();
+      renderGantt();
+      closeModal();
+    });
+
+    document.getElementById("btn-delete-task").addEventListener("click", function() {
+      var project = getActiveProject();
+      var id = document.getElementById("task-id").value;
+      if (!id) return;
+
+      var filtered = [];
+      for (var i = 0; i < project.tasks.length; i++) {
+        if (project.tasks[i].id !== id) {
+          filtered.push(project.tasks[i]);
+        }
+      }
+      project.tasks = filtered;
+      saveState();
+      renderGantt();
+      closeModal();
+    });
+
+    // EXPORTACION E IMPORTACION
+    function executeClassicDownload(blob, filename) {
+      var url = URL.createObjectURL(blob);
+      var anchor = document.createElement("a");
+      anchor.style.position = "fixed";
+      anchor.style.left = "-9999px";
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      setTimeout(function() {
+        if (anchor.parentNode) {
+          anchor.parentNode.removeChild(anchor);
+        }
+        URL.revokeObjectURL(url);
+      }, 1200);
+    }
+
+    function showExportFallbackModal(jsonString) {
+      var fallbackModal = document.getElementById("export-modal");
+      document.getElementById("export-textarea").value = jsonString;
+      fallbackModal.classList.add("active");
+    }
+
+    document.getElementById("btn-export-modal-close").addEventListener("click", function() {
+      document.getElementById("export-modal").classList.remove("active");
+    });
+
+    document.getElementById("btn-copy-json").addEventListener("click", function() {
+      var textarea = document.getElementById("export-textarea");
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textarea.value).then(function() {
+          alert("JSON copiado al portapapeles.");
+        }).catch(function() {
+          document.execCommand("copy");
+          alert("JSON copiado al portapapeles.");
+        });
+      } else {
+        document.execCommand("copy");
+        alert("JSON copiado al portapapeles.");
+      }
+    });
+
+    document.getElementById("btn-export").addEventListener("click", function() {
+      var project = getActiveProject();
+      var sanitizedName = project.name.replace(/[^a-zA-Z0-9_\-]/g, "_").toLowerCase();
+      var payload = {
+        version: window.APP_VERSION,
+        exportedAt: new Date().toISOString(),
+        activeProjectId: state.activeProjectId,
+        projects: state.projects
+      };
+      var jsonString = JSON.stringify(payload, null, 2);
+      var filename = "gantt_" + sanitizedName + "_" + Date.now() + ".json";
+      var blob = new Blob([jsonString], { type: "application/octet-stream" });
+
+      try {
+        if (navigator.share && typeof File === "function") {
+          var testFile = new File([blob], filename, { type: "application/json" });
+          if (navigator.canShare && navigator.canShare({ files: [testFile] })) {
+            navigator.share({
+              files: [testFile],
+              title: filename
+            }).catch(function(err) {
+              if (err && err.name !== "AbortError") {
+                executeClassicDownload(blob, filename);
+              }
+            });
+            return;
+          }
+        }
+      } catch (shareErr) {}
+
+      try {
+        executeClassicDownload(blob, filename);
+      } catch (dlErr) {
+        showExportFallbackModal(jsonString);
+      }
+    });
+
+    document.getElementById("btn-import-trigger").addEventListener("click", function() {
+      document.getElementById("file-importer").click();
+    });
+
+    document.getElementById("file-importer").addEventListener("change", function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          var parsed = JSON.parse(evt.target.result);
+          if (!parsed) throw new Error("Archivo vacío");
+
+          if (Array.isArray(parsed.projects)) {
+            for (var p = 0; p < parsed.projects.length; p++) {
+              var incomingProj = parsed.projects[p];
+              var nameExists = false;
+              for (var ex = 0; ex < state.projects.length; ex++) {
+                if (state.projects[ex].name === incomingProj.name) {
+                  nameExists = true;
+                  break;
+                }
+              }
+              if (nameExists) {
+                incomingProj.name = incomingProj.name + " (Importado)";
+              }
+              incomingProj.id = "p_" + Date.now().toString(36) + "_" + p;
+              state.projects.push(incomingProj);
+              state.activeProjectId = incomingProj.id;
+            }
+          } else if (Array.isArray(parsed.tasks) || Array.isArray(parsed)) {
+            var tasksToImport = Array.isArray(parsed.tasks) ? parsed.tasks : parsed;
+            var importedProject = {
+              id: "p_" + Date.now().toString(36),
+              name: "Importado " + new Date().toLocaleDateString(),
+              tasks: []
+            };
+            for (var i = 0; i < tasksToImport.length; i++) {
+              var it = tasksToImport[i];
+              if (it.name && typeof it.startMinutes === "number" && typeof it.endMinutes === "number") {
+                importedProject.tasks.push({
+                  id: it.id || generateId(),
+                  name: String(it.name),
+                  startMinutes: Math.max(0, Math.min(1440, it.startMinutes)),
+                  endMinutes: Math.max(0, Math.min(1440, it.endMinutes)),
+                  color: it.color || PALETTE[0]
+                });
+              }
+            }
+            state.projects.push(importedProject);
+            state.activeProjectId = importedProject.id;
+          } else {
+            throw new Error("Estructura no válida");
+          }
+
+          saveState();
+          updateProjectSelector();
+          renderGantt();
+        } catch (err) {
+          alert("Error al importar el archivo JSON.");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+
+    // DETECCION DE TEMA EN EL SISTEMA
+    if (window.matchMedia) {
+      var colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      var handleThemeChange = function() {
+        if (state.theme === "auto") {
+          applyTheme("auto");
+        }
+      };
+      if (colorSchemeQuery.addEventListener) {
+        colorSchemeQuery.addEventListener("change", handleThemeChange);
+      } else if (colorSchemeQuery.addListener) {
+        colorSchemeQuery.addListener(handleThemeChange);
+      }
+    }
+
+    // REGISTRO DEL SERVICE WORKER (PWA)
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function() {
+        navigator.serviceWorker.register("./sw.js").catch(function() {});
+      });
+    }
+
+    // INICIALIZACION DIRECTA
+    function initApp() {
+      document.getElementById("ui-version").textContent = window.APP_VERSION;
+      initPalette();
+      loadState();
+      renderGantt();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+</html>
