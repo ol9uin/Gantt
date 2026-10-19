@@ -33,15 +33,17 @@
       --grid-line: rgba(0, 0, 0, 0.05);
       --grid-hour-line: rgba(0, 0, 0, 0.22);
       --glass-bg: rgba(255, 255, 255, 0.75);
+      --group-bg: rgba(0, 0, 0, 0.04);
+      --group-border: rgba(0, 0, 0, 0.09);
       --btn-bg-neutral: rgba(0, 0, 0, 0.06);
-      --btn-border-neutral: rgba(0, 0, 0, 0.14);
+      --btn-border-neutral: rgba(0, 0, 0, 0.12);
       --btn-bg-primary: rgba(0, 122, 255, 0.16);
       --btn-border-primary: rgba(0, 122, 255, 0.4);
       --btn-text-primary: #0066cc;
       --btn-bg-danger: rgba(255, 59, 48, 0.16);
       --btn-border-danger: rgba(255, 59, 48, 0.4);
       --btn-text-danger: #cc2217;
-      --modal-bg: rgba(255, 255, 255, 0.92);
+      --modal-bg: rgba(255, 255, 255, 0.94);
       --modal-overlay: rgba(0, 0, 0, 0.4);
       --input-bg: rgba(0, 0, 0, 0.04);
     }
@@ -56,15 +58,17 @@
         --grid-line: rgba(255, 255, 255, 0.06);
         --grid-hour-line: rgba(255, 255, 255, 0.28);
         --glass-bg: rgba(0, 0, 0, 0.75);
+        --group-bg: rgba(255, 255, 255, 0.08);
+        --group-border: rgba(255, 255, 255, 0.14);
         --btn-bg-neutral: rgba(255, 255, 255, 0.12);
-        --btn-border-neutral: rgba(255, 255, 255, 0.2);
+        --btn-border-neutral: rgba(255, 255, 255, 0.18);
         --btn-bg-primary: rgba(10, 132, 255, 0.26);
         --btn-border-primary: rgba(10, 132, 255, 0.55);
         --btn-text-primary: #64b5f6;
         --btn-bg-danger: rgba(255, 69, 58, 0.26);
         --btn-border-danger: rgba(255, 69, 58, 0.55);
         --btn-text-danger: #ff8a80;
-        --modal-bg: rgba(10, 10, 10, 0.92);
+        --modal-bg: rgba(10, 10, 10, 0.94);
         --modal-overlay: rgba(0, 0, 0, 0.75);
         --input-bg: rgba(255, 255, 255, 0.08);
       }
@@ -79,23 +83,25 @@
       --grid-line: rgba(255, 255, 255, 0.06);
       --grid-hour-line: rgba(255, 255, 255, 0.28);
       --glass-bg: rgba(0, 0, 0, 0.75);
+      --group-bg: rgba(255, 255, 255, 0.08);
+      --group-border: rgba(255, 255, 255, 0.14);
       --btn-bg-neutral: rgba(255, 255, 255, 0.12);
-      --btn-border-neutral: rgba(255, 255, 255, 0.2);
+      --btn-border-neutral: rgba(255, 255, 255, 0.18);
       --btn-bg-primary: rgba(10, 132, 255, 0.26);
       --btn-border-primary: rgba(10, 132, 255, 0.55);
       --btn-text-primary: #64b5f6;
       --btn-bg-danger: rgba(255, 69, 58, 0.26);
       --btn-border-danger: rgba(255, 69, 58, 0.55);
       --btn-text-danger: #ff8a80;
-      --modal-bg: rgba(10, 10, 10, 0.92);
+      --modal-bg: rgba(10, 10, 10, 0.94);
       --modal-overlay: rgba(0, 0, 0, 0.75);
       --input-bg: rgba(255, 255, 255, 0.08);
     }
 
     :root {
       --slot-width: 28px;
-      --row-height: 48px;
-      --header-height: 44px;
+      --row-height: 52px;
+      --header-height: 50px;
       --sidebar-width: 155px;
     }
 
@@ -123,7 +129,7 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 14px;
+      padding: 6px 12px;
       background-color: var(--glass-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -158,10 +164,62 @@
       border-radius: 8px;
     }
 
-    /* BOTONES TRANSLUCIDOS */
+    /* MINI RECUADROS SEGMENTADOS */
+    .capsule-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background-color: var(--group-bg);
+      border: 1px solid var(--group-border);
+      border-radius: 14px;
+      padding: 2px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .capsule-divider {
+      width: 1px;
+      height: 16px;
+      background-color: var(--border-color);
+      margin: 0 1px;
+    }
+
+    .capsule-group .btn {
+      border: none;
+      background: transparent;
+      border-radius: 10px;
+      min-height: 32px;
+      height: 32px;
+      padding: 0 9px;
+      font-size: 12.5px;
+    }
+
+    .capsule-group .btn:active {
+      background-color: var(--btn-bg-neutral);
+    }
+
+    .capsule-group .project-dropdown {
+      border: none;
+      background: transparent;
+      min-height: 32px;
+      height: 32px;
+      padding: 0 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      outline: none;
+      max-width: 125px;
+    }
+
+    .capsule-group .project-dropdown option {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+    }
+
+    /* BOTONES INDIVIDUALES */
     .btn {
-      min-height: 38px;
-      padding: 0 11px;
+      min-height: 36px;
+      padding: 0 12px;
       border-radius: 14px;
       background-color: var(--btn-bg-neutral);
       border: 1px solid var(--btn-border-neutral);
@@ -198,36 +256,14 @@
     }
 
     .btn-icon {
-      width: 38px;
-      height: 38px;
+      width: 32px;
+      height: 32px;
       padding: 0;
     }
 
-    /* GESTION DE PROYECTOS */
-    .project-control-group {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .project-dropdown {
-      min-height: 38px;
-      border-radius: 14px;
-      background-color: var(--btn-bg-neutral);
-      border: 1px solid var(--btn-border-neutral);
-      color: var(--text-main);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 0 10px;
-      max-width: 130px;
-      outline: none;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    .project-dropdown option {
-      background-color: var(--bg-surface);
-      color: var(--text-main);
+    /* ENCABEZADO EXCLUSIVO PARA IMPRESION */
+    .print-title-banner {
+      display: none;
     }
 
     /* CONTENEDOR DEL GANTT */
@@ -236,7 +272,7 @@
       overflow-x: auto;
       overflow-y: auto;
       background-color: var(--bg-page);
-      max-height: calc(100vh - 58px);
+      max-height: calc(100vh - 60px);
       position: relative;
       -webkit-overflow-scrolling: touch;
       transform: translateZ(0);
@@ -311,7 +347,7 @@
       height: 100%;
     }
 
-    /* FILAS Y REORDENAMIENTO MANUAL */
+    /* FILAS Y BARRAS EN DOS LINEAS */
     .gantt-rows {
       display: flex;
       flex-direction: column;
@@ -383,22 +419,41 @@
 
     .task-bar {
       position: absolute;
-      top: 6px;
-      height: calc(var(--row-height) - 12px);
+      top: 5px;
+      height: calc(var(--row-height) - 10px);
       border-radius: 12px;
-      padding: 0 10px;
+      padding: 0 8px;
       color: #ffffff;
-      font-size: 11px;
-      font-weight: 600;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
       cursor: pointer;
       overflow: hidden;
       white-space: nowrap;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
       z-index: 10;
       border: 1px solid rgba(255, 255, 255, 0.2);
+      line-height: 1.25;
+    }
+
+    .task-bar-title {
+      font-size: 11px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+    }
+
+    .task-bar-time {
+      font-size: 9.5px;
+      opacity: 0.88;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
     }
 
     .empty-state {
@@ -438,7 +493,7 @@
       border: 1px solid var(--border-color);
       border-radius: 20px;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
       overflow: hidden;
       max-height: 90vh;
@@ -460,7 +515,7 @@
       padding: 16px 18px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 13px;
       overflow-y: auto;
     }
 
@@ -517,8 +572,15 @@
       color: var(--text-main);
     }
 
-    /* PALETA CROMATICA DE TAREAS */
-    .color-presets {
+    /* PALETA CROMATICA EXPANDIDA Y RECIENTES */
+    .color-section-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .color-presets-grid {
       display: grid;
       grid-template-columns: repeat(8, 1fr);
       gap: 6px;
@@ -526,18 +588,50 @@
     }
 
     .color-bubble {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       cursor: pointer;
       border: 2px solid transparent;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-      transition: transform 0.15s ease;
+      transition: transform 0.12s ease;
     }
 
     .color-bubble.selected {
       border-color: var(--text-main);
-      transform: scale(1.15);
+      transform: scale(1.18);
+    }
+
+    .color-picker-custom-btn {
+      position: relative;
+      overflow: hidden;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
+      flex-shrink: 0;
+    }
+
+    .color-picker-custom-input {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 50px;
+      height: 50px;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .recents-container {
+      display: flex;
+      gap: 6px;
+      min-height: 30px;
+      align-items: center;
     }
 
     .modal-footer {
@@ -560,28 +654,93 @@
       transition: transform 0.35s ease, opacity 0.2s ease;
     }
 
+    /* REGLAS ESTRICTAS DE IMPRESION / PDF */
+    @media print {
+      @page {
+        size: landscape;
+        margin: 6mm 10mm;
+      }
+      *, *::before, *::after {
+        background-color: transparent !important;
+        box-shadow: none !important;
+      }
+      body, html {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        overflow: visible !important;
+      }
+      header, .modal-overlay, .row-order-controls, #empty-state {
+        display: none !important;
+      }
+      .print-title-banner {
+        display: block !important;
+        font-size: 17px;
+        font-weight: 700;
+        padding-bottom: 8px;
+        color: #000000 !important;
+        border-bottom: 1.5px solid #000000;
+        margin-bottom: 10px;
+      }
+      .gantt-scroller {
+        overflow: visible !important;
+        max-height: none !important;
+        border: none !important;
+        background-color: #ffffff !important;
+      }
+      .gantt-board {
+        width: 100% !important;
+        background-color: #ffffff !important;
+      }
+      .gantt-head, .gantt-head-sidebar, .row-sidebar {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border-color: #cccccc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .row-cells-container {
+        background-color: #ffffff !important;
+        background-image: 
+          linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+          linear-gradient(to right, rgba(0, 0, 0, 0.22) 1px, transparent 1px) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .task-bar {
+        border-radius: 6px !important;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .hour-block, .slot-tick, .gantt-row {
+        border-color: #cccccc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
     /* RESPONSIVIDAD MOBILE FIRST */
     @media (max-width: 480px) {
       :root {
-        --sidebar-width: 115px;
+        --sidebar-width: 105px;
       }
       .app-title {
         display: none;
       }
-      .project-dropdown {
-        max-width: 95px;
+      .capsule-group .project-dropdown {
+        max-width: 85px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- BARRA DE ACCION SUPERIOR -->
+  <!-- BARRA DE ACCION SUPERIOR CON ISLAS FUNCIONALES -->
   <header>
     <div class="header-left">
       <span class="app-title">Planificación</span>
       <span class="version-tag" id="ui-version"></span>
-      <div class="project-control-group">
+      <div class="capsule-group">
         <select id="project-selector" class="project-dropdown"></select>
         <button type="button" class="btn btn-icon" id="btn-add-project" title="Nuevo Proyecto">+</button>
         <button type="button" class="btn btn-icon" id="btn-edit-project" title="Renombrar Proyecto">✎</button>
@@ -589,15 +748,28 @@
       </div>
     </div>
     <div class="header-right">
+      <div class="capsule-group">
+        <button type="button" class="btn btn-icon" id="btn-zoom-out" title="Reducir escala">−</button>
+        <div class="capsule-divider"></div>
+        <button type="button" class="btn btn-icon" id="btn-zoom-in" title="Aumentar escala">+</button>
+      </div>
       <button type="button" class="btn btn-primary" id="btn-add-task">+ Tarea</button>
-      <button type="button" class="btn" id="btn-export">Exportar</button>
-      <button type="button" class="btn" id="btn-import-trigger">Importar</button>
+      <div class="capsule-group">
+        <button type="button" class="btn" id="btn-pdf" title="Guardar o imprimir PDF">PDF</button>
+        <div class="capsule-divider"></div>
+        <button type="button" class="btn" id="btn-export">Exportar</button>
+        <div class="capsule-divider"></div>
+        <button type="button" class="btn" id="btn-import-trigger">Importar</button>
+      </div>
       <button type="button" class="btn btn-icon" id="btn-theme-toggle" title="Cambiar Tema" aria-label="Cambiar Tema">
         <svg class="theme-icon-svg" id="theme-icon" viewBox="0 0 24 24"></svg>
       </button>
       <input type="file" id="file-importer" accept=".json" style="display: none;">
     </div>
   </header>
+
+  <!-- ENCABEZADO FORMAL PARA DOCUMENTO PDF -->
+  <div class="print-title-banner" id="print-title-banner"></div>
 
   <!-- VISTA DEL PLANIFICADOR -->
   <main class="gantt-scroller" id="gantt-scroller">
@@ -671,13 +843,23 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Identificador Visual</label>
-            <div class="color-presets" id="color-picker-group"></div>
+            <div class="color-section-row">
+              <label>Paleta de Color</label>
+              <div class="color-picker-custom-btn" title="Elegir color personalizado">
+                <input type="color" id="custom-color-picker" class="color-picker-custom-input" value="#007aff">
+              </div>
+            </div>
+            <div class="color-presets-grid" id="color-picker-group"></div>
             <input type="hidden" id="task-color" value="#007aff">
+          </div>
+          <div class="form-group" id="recent-colors-section">
+            <label>Recientes</label>
+            <div class="recents-container" id="recent-colors-group"></div>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" id="btn-delete-task" style="display: none;">Eliminar</button>
+          <button type="button" class="btn" id="btn-duplicate-task" style="display: none;">Duplicar</button>
           <button type="button" class="btn" id="btn-modal-cancel">Cancelar</button>
           <button type="submit" class="btn btn-primary" id="btn-save-task">Guardar</button>
         </div>
@@ -705,12 +887,19 @@
   <script>
     // ESTADO GENERAL Y PALETA
     var STORAGE_KEY = "gantt_daily_data";
+    var RECENTS_STORAGE_KEY = "gantt_recent_colors";
+    var ZOOM_STORAGE_KEY = "gantt_slot_width";
+
     var PALETTE = [
       "#007aff", "#34c759", "#ff9500", "#ff3b30",
-      "#af52de", "#5856d6", "#00c7be", "#ff2d55"
+      "#af52de", "#5856d6", "#00c7be", "#ff2d55",
+      "#0284c7", "#059669", "#d97706", "#dc2626",
+      "#7c3aed", "#475569", "#e11d48", "#14b8a6"
     ];
+
     var SLOT_MINUTES = 10;
-    var SLOT_WIDTH = 28;
+    var slotWidth = 28;
+    var recentColors = [];
 
     var state = {
       version: window.APP_VERSION,
@@ -830,6 +1019,28 @@
           }
         }
       } catch (err) {}
+
+      try {
+        var savedZoom = localStorage.getItem(ZOOM_STORAGE_KEY);
+        if (savedZoom) {
+          var z = parseInt(savedZoom, 10);
+          if (z >= 16 && z <= 56) {
+            slotWidth = z;
+            document.documentElement.style.setProperty("--slot-width", slotWidth + "px");
+          }
+        }
+      } catch (err) {}
+
+      try {
+        var savedRecents = localStorage.getItem(RECENTS_STORAGE_KEY);
+        if (savedRecents) {
+          var rc = JSON.parse(savedRecents);
+          if (Array.isArray(rc)) {
+            recentColors = rc;
+          }
+        }
+      } catch (err) {}
+
       applyTheme(state.theme);
       updateProjectSelector();
     }
@@ -845,6 +1056,22 @@
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
       } catch (err) {}
+    }
+
+    function saveRecentColors(newColor) {
+      if (!newColor) return;
+      var filtered = [];
+      for (var i = 0; i < recentColors.length; i++) {
+        if (recentColors[i].toLowerCase() !== newColor.toLowerCase()) {
+          filtered.push(recentColors[i]);
+        }
+      }
+      filtered.unshift(newColor);
+      recentColors = filtered.slice(0, 5);
+      try {
+        localStorage.setItem(RECENTS_STORAGE_KEY, JSON.stringify(recentColors));
+      } catch (err) {}
+      renderRecentColors();
     }
 
     // CALCULO DINAMICO DE TIEMPO
@@ -899,7 +1126,7 @@
       var endMin = bounds.endMinute;
       var totalMinutes = endMin - startMin;
       var totalSlots = totalMinutes / SLOT_MINUTES;
-      var totalTrackWidth = totalSlots * SLOT_WIDTH;
+      var totalTrackWidth = totalSlots * slotWidth;
 
       var headerTrack = document.getElementById("header-timeline-track");
       var rowsContainer = document.getElementById("gantt-rows-container");
@@ -920,7 +1147,7 @@
       for (var h = startHour; h < endHour; h++) {
         var hourDiv = document.createElement("div");
         hourDiv.className = "hour-block";
-        hourDiv.style.width = (SLOT_WIDTH * 6) + "px";
+        hourDiv.style.width = (slotWidth * 6) + "px";
 
         var hourLabel = document.createElement("div");
         hourLabel.className = "hour-label";
@@ -1000,8 +1227,8 @@
         var relativeStart = task.startMinutes - startMin;
         var duration = task.endMinutes - task.startMinutes;
 
-        var taskLeft = (relativeStart / SLOT_MINUTES) * SLOT_WIDTH;
-        var taskWidth = (duration / SLOT_MINUTES) * SLOT_WIDTH;
+        var taskLeft = (relativeStart / SLOT_MINUTES) * slotWidth;
+        var taskWidth = (duration / SLOT_MINUTES) * slotWidth;
 
         var bar = document.createElement("div");
         bar.className = "task-bar";
@@ -1009,18 +1236,15 @@
         bar.style.width = taskWidth + "px";
         bar.style.backgroundColor = task.color;
 
-        var textContent = document.createElement("span");
-        textContent.textContent = task.name;
-        textContent.style.overflow = "hidden";
-        textContent.style.textOverflow = "ellipsis";
+        var titleContent = document.createElement("span");
+        titleContent.className = "task-bar-title";
+        titleContent.textContent = task.name;
 
         var timeContent = document.createElement("span");
-        timeContent.style.fontSize = "10px";
-        timeContent.style.opacity = "0.9";
-        timeContent.style.marginLeft = "6px";
+        timeContent.className = "task-bar-time";
         timeContent.textContent = minutesToTimeString(task.startMinutes) + " - " + minutesToTimeString(task.endMinutes);
 
-        bar.appendChild(textContent);
+        bar.appendChild(titleContent);
         bar.appendChild(timeContent);
 
         (function(targetTask) {
@@ -1037,7 +1261,7 @@
       }
     }
 
-    // MODAL Y PALETA
+    // GESTION CROMATICA DE MODAL
     function initPalette() {
       var colorContainer = document.getElementById("color-picker-group");
       colorContainer.innerHTML = "";
@@ -1051,24 +1275,60 @@
         });
         colorContainer.appendChild(bubble);
       }
+      renderRecentColors();
+    }
+
+    function renderRecentColors() {
+      var recentsContainer = document.getElementById("recent-colors-group");
+      var section = document.getElementById("recent-colors-section");
+      recentsContainer.innerHTML = "";
+
+      if (recentColors.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+      section.style.display = "flex";
+
+      for (var r = 0; r < recentColors.length; r++) {
+        var bubble = document.createElement("div");
+        bubble.className = "color-bubble";
+        bubble.style.backgroundColor = recentColors[r];
+        bubble.setAttribute("data-color", recentColors[r]);
+        bubble.addEventListener("click", function() {
+          selectColor(this.getAttribute("data-color"));
+        });
+        recentsContainer.appendChild(bubble);
+      }
     }
 
     function selectColor(color) {
       document.getElementById("task-color").value = color;
-      var bubbles = document.querySelectorAll(".color-bubble");
-      for (var b = 0; b < bubbles.length; b++) {
-        if (bubbles[b].getAttribute("data-color") === color) {
-          bubbles[b].classList.add("selected");
+      document.getElementById("custom-color-picker").value = color;
+
+      var allBubbles = document.querySelectorAll(".color-bubble");
+      for (var b = 0; b < allBubbles.length; b++) {
+        if (allBubbles[b].getAttribute("data-color").toLowerCase() === color.toLowerCase()) {
+          allBubbles[b].classList.add("selected");
         } else {
-          bubbles[b].classList.remove("selected");
+          allBubbles[b].classList.remove("selected");
         }
       }
     }
+
+    document.getElementById("custom-color-picker").addEventListener("input", function(e) {
+      selectColor(e.target.value);
+    });
+
+    document.getElementById("custom-color-picker").addEventListener("change", function(e) {
+      selectColor(e.target.value);
+      saveRecentColors(e.target.value);
+    });
 
     function openModal(task) {
       var modal = document.getElementById("task-modal");
       var title = document.getElementById("modal-title");
       var deleteBtn = document.getElementById("btn-delete-task");
+      var duplicateBtn = document.getElementById("btn-duplicate-task");
 
       if (task) {
         title.textContent = "Modificar Tarea";
@@ -1087,6 +1347,7 @@
 
         selectColor(task.color);
         deleteBtn.style.display = "inline-flex";
+        duplicateBtn.style.display = "inline-flex";
       } else {
         title.textContent = "Nueva Tarea";
         document.getElementById("task-id").value = "";
@@ -1097,6 +1358,7 @@
         document.getElementById("end-minute").value = "00";
         selectColor(PALETTE[0]);
         deleteBtn.style.display = "none";
+        duplicateBtn.style.display = "none";
       }
 
       modal.classList.add("active");
@@ -1106,7 +1368,36 @@
       document.getElementById("task-modal").classList.remove("active");
     }
 
-    // GESTION DE EVENTOS DE PROYECTOS
+    // CONTROLADORES DE ZOOM
+    function applyZoom(delta) {
+      var next = slotWidth + delta;
+      if (next >= 16 && next <= 56) {
+        slotWidth = next;
+        document.documentElement.style.setProperty("--slot-width", slotWidth + "px");
+        try {
+          localStorage.setItem(ZOOM_STORAGE_KEY, slotWidth.toString());
+        } catch (err) {}
+        renderGantt();
+      }
+    }
+
+    document.getElementById("btn-zoom-in").addEventListener("click", function() {
+      applyZoom(4);
+    });
+
+    document.getElementById("btn-zoom-out").addEventListener("click", function() {
+      applyZoom(-4);
+    });
+
+    // EXPORTACION A PDF
+    document.getElementById("btn-pdf").addEventListener("click", function() {
+      var project = getActiveProject();
+      var banner = document.getElementById("print-title-banner");
+      banner.textContent = "Planificación: " + (project ? project.name : "");
+      window.print();
+    });
+
+    // GESTION DE PROYECTOS
     document.getElementById("project-selector").addEventListener("change", function(e) {
       state.activeProjectId = e.target.value;
       saveState();
@@ -1213,6 +1504,36 @@
         });
       }
 
+      saveRecentColors(color);
+      saveState();
+      renderGantt();
+      closeModal();
+    });
+
+    document.getElementById("btn-duplicate-task").addEventListener("click", function() {
+      var project = getActiveProject();
+      var id = document.getElementById("task-id").value;
+      if (!id || !project) return;
+
+      var targetIndex = -1;
+      for (var i = 0; i < project.tasks.length; i++) {
+        if (project.tasks[i].id === id) {
+          targetIndex = i;
+          break;
+        }
+      }
+      if (targetIndex === -1) return;
+
+      var source = project.tasks[targetIndex];
+      var cloned = {
+        id: generateId(),
+        name: source.name + " (Copia)",
+        startMinutes: source.startMinutes,
+        endMinutes: source.endMinutes,
+        color: source.color
+      };
+
+      project.tasks.splice(targetIndex + 1, 0, cloned);
       saveState();
       renderGantt();
       closeModal();
@@ -1235,7 +1556,7 @@
       closeModal();
     });
 
-    // EXPORTACION E IMPORTACION
+    // EXPORTACION E IMPORTACION DE PROYECTO ACTUAL
     function executeClassicDownload(blob, filename) {
       var url = URL.createObjectURL(blob);
       var anchor = document.createElement("a");
@@ -1281,13 +1602,16 @@
     });
 
     document.getElementById("btn-export").addEventListener("click", function() {
-      var project = getActiveProject();
-      var sanitizedName = project.name.replace(/[^a-zA-Z0-9_\-]/g, "_").toLowerCase();
+      var activeProject = getActiveProject();
+      var sanitizedName = activeProject.name.replace(/[^a-zA-Z0-9_\-]/g, "_").toLowerCase();
       var payload = {
         version: window.APP_VERSION,
         exportedAt: new Date().toISOString(),
-        activeProjectId: state.activeProjectId,
-        projects: state.projects
+        project: {
+          id: activeProject.id,
+          name: activeProject.name,
+          tasks: activeProject.tasks
+        }
       };
       var jsonString = JSON.stringify(payload, null, 2);
       var filename = "gantt_" + sanitizedName + "_" + Date.now() + ".json";
@@ -1331,46 +1655,41 @@
           var parsed = JSON.parse(evt.target.result);
           if (!parsed) throw new Error("Archivo vacío");
 
-          if (Array.isArray(parsed.projects)) {
+          if (parsed.project && typeof parsed.project === "object") {
+            var incoming = parsed.project;
+            var nameConflict = false;
+            for (var i = 0; i < state.projects.length; i++) {
+              if (state.projects[i].name === incoming.name) {
+                nameConflict = true;
+                break;
+              }
+            }
+            var newName = nameConflict ? incoming.name + " (Importado)" : incoming.name;
+            var newProj = {
+              id: "p_" + Date.now().toString(36),
+              name: newName,
+              tasks: Array.isArray(incoming.tasks) ? incoming.tasks : []
+            };
+            state.projects.push(newProj);
+            state.activeProjectId = newProj.id;
+          } else if (Array.isArray(parsed.projects)) {
             for (var p = 0; p < parsed.projects.length; p++) {
-              var incomingProj = parsed.projects[p];
-              var nameExists = false;
-              for (var ex = 0; ex < state.projects.length; ex++) {
-                if (state.projects[ex].name === incomingProj.name) {
-                  nameExists = true;
-                  break;
-                }
-              }
-              if (nameExists) {
-                incomingProj.name = incomingProj.name + " (Importado)";
-              }
-              incomingProj.id = "p_" + Date.now().toString(36) + "_" + p;
-              state.projects.push(incomingProj);
-              state.activeProjectId = incomingProj.id;
+              var pr = parsed.projects[p];
+              pr.id = "p_" + Date.now().toString(36) + "_" + p;
+              state.projects.push(pr);
+              state.activeProjectId = pr.id;
             }
           } else if (Array.isArray(parsed.tasks) || Array.isArray(parsed)) {
-            var tasksToImport = Array.isArray(parsed.tasks) ? parsed.tasks : parsed;
-            var importedProject = {
+            var tList = Array.isArray(parsed.tasks) ? parsed.tasks : parsed;
+            var fallbackProj = {
               id: "p_" + Date.now().toString(36),
               name: "Importado " + new Date().toLocaleDateString(),
-              tasks: []
+              tasks: tList
             };
-            for (var i = 0; i < tasksToImport.length; i++) {
-              var it = tasksToImport[i];
-              if (it.name && typeof it.startMinutes === "number" && typeof it.endMinutes === "number") {
-                importedProject.tasks.push({
-                  id: it.id || generateId(),
-                  name: String(it.name),
-                  startMinutes: Math.max(0, Math.min(1440, it.startMinutes)),
-                  endMinutes: Math.max(0, Math.min(1440, it.endMinutes)),
-                  color: it.color || PALETTE[0]
-                });
-              }
-            }
-            state.projects.push(importedProject);
-            state.activeProjectId = importedProject.id;
+            state.projects.push(fallbackProj);
+            state.activeProjectId = fallbackProj.id;
           } else {
-            throw new Error("Estructura no válida");
+            throw new Error("Formato no reconocido");
           }
 
           saveState();
